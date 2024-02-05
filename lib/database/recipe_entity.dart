@@ -9,10 +9,9 @@ class RecipeEntity
   final String description;
   final String ingredients;
   final String category;
-  final int occurredOn;
 
   RecipeEntity(this.id, this.recipeName, this.description, this.ingredients,
-      this.category, this.occurredOn);
+      this.category);
 }
 
 
