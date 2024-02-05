@@ -85,7 +85,7 @@ class _$RecipeDatabase extends RecipeDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Recipe` (`id` INTEGER NOT NULL, `recipeName` TEXT NOT NULL, `description` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `category` TEXT NOT NULL, `occurredOn` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Recipe` (`id` INTEGER NOT NULL, `recipeName` TEXT NOT NULL, `description` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `category` TEXT NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -103,7 +103,7 @@ class _$RecipeDao extends RecipeDao {
   _$RecipeDao(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database),
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
         _recipeEntityInsertionAdapter = InsertionAdapter(
             database,
             'Recipe',
@@ -112,9 +112,9 @@ class _$RecipeDao extends RecipeDao {
                   'recipeName': item.recipeName,
                   'description': item.description,
                   'ingredients': item.ingredients,
-                  'category': item.category,
-                  'occurredOn': item.occurredOn
-                });
+                  'category': item.category
+                },
+            changeListener);
 
   final sqflite.DatabaseExecutor database;
 
@@ -132,14 +132,27 @@ class _$RecipeDao extends RecipeDao {
             row['recipeName'] as String,
             row['description'] as String,
             row['ingredients'] as String,
-            row['category'] as String,
-            row['occurredOn'] as int));
+            row['category'] as String));
   }
 
   @override
   Future<List<String>> listCategories() async {
     return _queryAdapter.queryList('SELECT DISTINCT category FROM Recipe',
         mapper: (Map<String, Object?> row) => row.values.first as String);
+  }
+
+  @override
+  Stream<RecipeEntity?> findRecipeById(int id) {
+    return _queryAdapter.queryStream('SELECT * FROM Recipe WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => RecipeEntity(
+            row['id'] as int,
+            row['recipeName'] as String,
+            row['description'] as String,
+            row['ingredients'] as String,
+            row['category'] as String),
+        arguments: [id],
+        queryableName: 'Recipe',
+        isView: false);
   }
 
   @override
