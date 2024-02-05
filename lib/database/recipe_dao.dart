@@ -9,4 +9,6 @@ abstract class RecipeDao {
   Future<List<RecipeEntity>> listAllEvents();
   @Query('SELECT DISTINCT category FROM Recipe')
   Future<List<String>> listCategories();
+  @Query('SELECT * FROM Recipe WHERE id = :id')
+  Stream<RecipeEntity?> findRecipeById(int id);
 }
