@@ -143,7 +143,7 @@ class _$RecipeDao extends RecipeDao {
   }
 
   @override
-  Future<void> addSpendingEvent(RecipeEntity event) async {
+  Future<void> addRecipe(RecipeEntity event) async {
     await _recipeEntityInsertionAdapter.insert(event, OnConflictStrategy.abort);
   }
 }
