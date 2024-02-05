@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_book_app/HomePage.dart';
+import 'package:recipe_book_app/database/recipe_database.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  RecipeDatabase database = await $FloorRecipeDatabase.databaseBuilder('recipe.db').build();
+  runApp(MyApp(database));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final RecipeDatabase database;
+  const MyApp(this.database,{super.key});
 
   // This widget is the root of your application.
   @override
