@@ -10,3 +10,4 @@ part 'recipe_database.g.dart';
 abstract class RecipeDatabase extends FloorDatabase {
   RecipeDao get recipeDao;
 }
+

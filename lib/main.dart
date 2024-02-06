@@ -1,42 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_book_app/HomePage.dart';
-import 'package:recipe_book_app/database/recipe_database.dart';
+import 'package:recipe_book_app/database/recipe_database.dart'; // Import your recipe database files
+import 'HomePage.dart'; // Assuming ReadPage is defined in ReadPage.dart
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   RecipeDatabase database = await $FloorRecipeDatabase.databaseBuilder('recipe.db').build();
-  runApp(MyApp(database));
+  runApp(MyApp(database: database));
 }
 
 class MyApp extends StatelessWidget {
   final RecipeDatabase database;
-  const MyApp(this.database,{super.key});
 
-  // This widget is the root of your application.
+  const MyApp({required this.database, Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Recipe App',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: HomePage(database: database), // Pass the database instance to ReadPage
     );
   }
 }
