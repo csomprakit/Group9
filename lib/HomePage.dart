@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'database/recipe_database.dart'; // Import your recipe database files
-import 'ReadPage.dart'; // Assuming RecipesPage is defined in RecipesPage.dart
+import 'bottom_nav.dart';
 
 class HomePage extends StatelessWidget {
   final RecipeDatabase database;
@@ -12,6 +13,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('My Recipe Book'),
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.orangeAccent, // Change the color of the app bar
       ),
       body: Stack(
@@ -33,10 +35,7 @@ class HomePage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     // Navigate to recipes page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ReadPage(database: database)),
-                    );
+                    GoRouter.of(context).push('/search');
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.orange)
@@ -50,6 +49,7 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }
