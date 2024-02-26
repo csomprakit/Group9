@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_book_app/database/recipe_database.dart'; // Import your recipe database files
-import 'HomePage.dart'; // Assuming ReadPage is defined in ReadPage.dart
+import 'router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,12 +15,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final appRouter = AppRouter(database: database);
+    final router = appRouter.getRouter();
+    return MaterialApp.router(
       title: 'Recipe App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(database: database), // Pass the database instance to ReadPage
+      routerConfig: router,
     );
   }
 }
