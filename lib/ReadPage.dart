@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'database/recipe_database.dart';
+import 'package:recipe_book_app/bottom_nav.dart';
 
 
 class Recipe {
@@ -91,6 +91,7 @@ class ReadPage extends StatelessWidget {
           );
         },
       ),
+      bottomNavigationBar: BottomNav(),
     );
   }
 }
