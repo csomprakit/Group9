@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'database/recipe_database.dart';
 import 'package:recipe_book_app/bottom_nav.dart';
 
@@ -70,6 +71,14 @@ class ReadPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Recipes'),
+        actions: <Widget>[
+          IconButton(
+          icon: Icon(Icons.add),
+      onPressed: (){
+        GoRouter.of(context).push('/addRecipe');
+      },
+      )
+        ],
       ),
       body: ListView.builder(
         itemCount: mockRecipes.length,
