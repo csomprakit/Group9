@@ -22,14 +22,14 @@ class AppRouter
           path: '/home',
           builder: (context, routerState)
           {
-            return HomePage(dao: this.dao,);
+            return HomePage(dao: this.dao);
           },
         ),
         GoRoute(
           path: '/search',
           builder: (context, routerState)
           {
-            return ReadPage(dao: this.dao,);
+            return ReadPage(dao: this.dao);
           },
         ),
         GoRoute(
@@ -43,7 +43,7 @@ class AppRouter
           path: '/addRecipe',
           builder: (context, routerState)
             {
-              return AddRecipe(database: database, dao: dao,);
+              return AddRecipe(dao: this.dao);
             }
         )
       ],
