@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:recipe_book_app/CreatePage.dart';
 import 'package:recipe_book_app/ReadPage.dart';
 import 'package:recipe_book_app/SettingsPage.dart';
 import 'HomePage.dart';
@@ -34,6 +35,13 @@ class AppRouter
           {
             return SettingsPage();
           },
+        ),
+        GoRoute(
+          path: '/addRecipe',
+          builder: (context, routerState)
+            {
+              return AddRecipe(database: database);
+            }
         )
       ],
     );
