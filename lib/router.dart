@@ -4,11 +4,14 @@ import 'package:recipe_book_app/ReadPage.dart';
 import 'package:recipe_book_app/SettingsPage.dart';
 import 'HomePage.dart';
 import 'database/recipe_database.dart';
+import 'database/recipe_dao.dart';
 
 class AppRouter
 {
   late final RecipeDatabase database;
-  AppRouter({required this.database});
+  final RecipeDao dao;
+
+  AppRouter({required this.dao});
 
   GoRouter getRouter()
   {
@@ -19,14 +22,14 @@ class AppRouter
           path: '/home',
           builder: (context, routerState)
           {
-            return HomePage(database: this.database);
+            return HomePage(dao: this.dao,);
           },
         ),
         GoRoute(
           path: '/search',
           builder: (context, routerState)
           {
-            return ReadPage(database: database);
+            return ReadPage(dao: this.dao,);
           },
         ),
         GoRoute(
@@ -40,7 +43,7 @@ class AppRouter
           path: '/addRecipe',
           builder: (context, routerState)
             {
-              return AddRecipe(database: database);
+              return AddRecipe(database: database, dao: dao,);
             }
         )
       ],
