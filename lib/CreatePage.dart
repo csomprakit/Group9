@@ -121,6 +121,7 @@ class RecipeFormState extends State<RecipeForm> {
           Text(''),
           const Text('Recipe Name'),
           TextFormField(
+            key: Key("recipeName"),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter some text';
@@ -138,6 +139,7 @@ class RecipeFormState extends State<RecipeForm> {
           Text(''),
           const Text('Description'),
           TextFormField(
+            key: Key("description"),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter some text';
