@@ -4,6 +4,7 @@ import 'package:recipe_book_app/CreatePage.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
 import 'package:recipe_book_app/bottom_nav.dart';
 import 'database/recipe_dao.dart';
+import 'dart:io';
 
 class ReadPage extends StatefulWidget {
   final RecipeDao dao;
@@ -58,8 +59,10 @@ class _ReadPageState extends State<ReadPage> {
                             title: Text(event.recipeName),
                             subtitle: Text(event.description),
                             leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  event.imagePath ?? 'lib/assets/carbonara.jpg'),
+                              backgroundImage: FileImage(
+                                File(event.imagePath),
+                              ),
+                              radius: 30,
                             ),
                             onTap: () {
                               // Navigate to recipe details page
@@ -99,6 +102,12 @@ class RecipeDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Image.file(
+              File(recipe.imagePath),
+              width: 250,
+              height: 250,
+              fit: BoxFit.cover,
+            ),
             Text(
               'Description:',
               style: TextStyle(fontWeight: FontWeight.bold),
