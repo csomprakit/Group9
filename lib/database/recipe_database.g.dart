@@ -85,7 +85,7 @@ class _$RecipeDatabase extends RecipeDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Recipe` (`id` INTEGER NOT NULL, `recipeName` TEXT NOT NULL, `description` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `category` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Recipe` (`id` INTEGER NOT NULL, `recipeName` TEXT NOT NULL, `description` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `category` TEXT NOT NULL, `imagePath` TEXT NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -112,7 +112,8 @@ class _$RecipeDao extends RecipeDao {
                   'recipeName': item.recipeName,
                   'description': item.description,
                   'ingredients': item.ingredients,
-                  'category': item.category
+                  'category': item.category,
+                  'imagePath': item.imagePath
                 },
             changeListener);
 
@@ -132,7 +133,8 @@ class _$RecipeDao extends RecipeDao {
             row['recipeName'] as String,
             row['description'] as String,
             row['ingredients'] as String,
-            row['category'] as String));
+            row['category'] as String,
+            row['imagePath'] as String));
   }
 
   @override
@@ -149,7 +151,8 @@ class _$RecipeDao extends RecipeDao {
             row['recipeName'] as String,
             row['description'] as String,
             row['ingredients'] as String,
-            row['category'] as String),
+            row['category'] as String,
+            row['imagePath'] as String),
         arguments: [id],
         queryableName: 'Recipe',
         isView: false);
