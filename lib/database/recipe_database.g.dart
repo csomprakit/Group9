@@ -13,8 +13,8 @@ class $FloorRecipeDatabase {
   static _$RecipeDatabaseBuilder databaseBuilder(String name) =>
       _$RecipeDatabaseBuilder(name);
 
-  /// Creates a database builder for an in memory database.
-  /// Information stored in an in memory database disappears when the process is killed.
+  /// Creates a database builder for an in-memory database.
+  /// Information stored in an in-memory database disappears when the process is killed.
   /// Once a database is built, you should keep a reference to it and re-use it.
   static _$RecipeDatabaseBuilder inMemoryDatabaseBuilder() =>
       _$RecipeDatabaseBuilder(null);
@@ -64,10 +64,10 @@ class _$RecipeDatabase extends RecipeDatabase {
   RecipeDao? _recipeDaoInstance;
 
   Future<sqflite.Database> open(
-    String path,
-    List<Migration> migrations, [
-    Callback? callback,
-  ]) async {
+      String path,
+      List<Migration> migrations, [
+        Callback? callback,
+      ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
       version: 1,
       onConfigure: (database) async {
@@ -101,29 +101,52 @@ class _$RecipeDatabase extends RecipeDatabase {
 
 class _$RecipeDao extends RecipeDao {
   _$RecipeDao(
-    this.database,
-    this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database, changeListener),
+      this.database,
+      this.changeListener,
+      )   : _queryAdapter = QueryAdapter(database, changeListener),
         _recipeEntityInsertionAdapter = InsertionAdapter(
             database,
             'Recipe',
-            (RecipeEntity item) => <String, Object?>{
-                  'id': item.id,
-                  'recipeName': item.recipeName,
-                  'description': item.description,
-                  'ingredients': item.ingredients,
-                  'category': item.category,
-                  'imagePath': item.imagePath
-                },
+                (RecipeEntity item) => <String, Object?>{
+              'id': item.id,
+              'recipeName': item.recipeName,
+              'description': item.description,
+              'ingredients': item.ingredients,
+              'category': item.category,
+              'imagePath': item.imagePath
+            },
+            changeListener),
+        _recipeEntityDeletionAdapter = DeletionAdapter(
+            database,
+            'Recipe',
+            // Columns to check for deletion
+            ['id'],
+            // Mapper for deletion
+                (RecipeEntity item) => <String, Object?>{'id': item.id},
+            changeListener),
+        _recipeEntityUpdateAdapter = UpdateAdapter(
+            database,
+            'Recipe',
+            // Columns to check for update
+            ['id'],
+            // Mapper for update
+                (RecipeEntity item) => <String, Object?>{
+              'id': item.id,
+              'recipeName': item.recipeName,
+              'description': item.description,
+              'ingredients': item.ingredients,
+              'category': item.category,
+              'imagePath': item.imagePath,
+            },
             changeListener);
 
   final sqflite.DatabaseExecutor database;
-
   final StreamController<String> changeListener;
-
   final QueryAdapter _queryAdapter;
-
   final InsertionAdapter<RecipeEntity> _recipeEntityInsertionAdapter;
+  final DeletionAdapter<RecipeEntity> _recipeEntityDeletionAdapter;
+  final UpdateAdapter<RecipeEntity> _recipeEntityUpdateAdapter;
+
 
   @override
   Future<List<RecipeEntity>> listAllEvents() async {
@@ -161,5 +184,15 @@ class _$RecipeDao extends RecipeDao {
   @override
   Future<void> addRecipe(RecipeEntity event) async {
     await _recipeEntityInsertionAdapter.insert(event, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateRecipe(RecipeEntity event) async {
+    await _recipeEntityUpdateAdapter.update(event, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteRecipe(RecipeEntity event) async {
+    await _recipeEntityDeletionAdapter.delete(event);
   }
 }
