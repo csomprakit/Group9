@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:recipe_book_app/CreatePage.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
 import 'package:recipe_book_app/bottom_nav.dart';
 import 'database/recipe_dao.dart';
+import 'dart:io';
 
 class ReadPage extends StatefulWidget {
   final RecipeDao dao;
+
   ReadPage({required this.dao, Key? key});
 
   @override
@@ -14,7 +15,6 @@ class ReadPage extends StatefulWidget {
 }
 
 class _ReadPageState extends State<ReadPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,38 +42,40 @@ class _ReadPageState extends State<ReadPage> {
                 } else {
                   List<RecipeEntity> recipeEvents = snapshot.data!
                       .map((entity) => RecipeEntity(
-                      entity.id,
-                      entity.recipeName,
-                      entity.description,
-                      entity.ingredients,
-                      entity.category,
-                      entity.imagePath))
+                          entity.id,
+                          entity.recipeName,
+                          entity.description,
+                          entity.ingredients,
+                          entity.category,
+                          entity.imagePath))
                       .toList();
                   return Column(
                     children: recipeEvents
                         .map((event) => Row(
-                      children: [
-                        Expanded(
-                          child: ListTile(
-                            title: Text(event.recipeName),
-                            subtitle: Text(event.description),
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  event.imagePath ?? 'lib/assets/carbonara.jpg'),
-                            ),
-                            onTap: () {
-                              // Navigate to recipe details page
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        RecipeDetailsPage(recipe: event)),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ))
+                              children: [
+                                Expanded(
+                                  child: ListTile(
+                                    title: Text(event.recipeName),
+                                    subtitle: Text(event.description),
+                                    leading: CircleAvatar(
+                                      backgroundImage: FileImage(
+                                        File(event.imagePath),
+                                      ),
+                                      radius: 30,
+                                    ),
+                                    onTap: () {
+                                      // Navigate to recipe details page
+                                      Navigator.push(context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RecipeDetailsPage(
+                                                    recipe: event)),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ))
                         .toList(),
                   );
                 }
@@ -94,23 +96,37 @@ class RecipeDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(recipe.recipeName),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Description:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(recipe.description),
-            SizedBox(height: 16.0),
-            Text(
-              'Ingredients:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(recipe.ingredients),
-          ],
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.file(
+                File(recipe.imagePath),
+                width: 250,
+                height: 250,
+                fit: BoxFit.cover,
+              ),
+              Text(
+                'Recipe Name:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(recipe.recipeName),
+              SizedBox(height: 16.0),
+              Text(
+                'Description:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(recipe.description),
+              SizedBox(height: 16.0),
+              Text(
+                'Ingredients:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(recipe.ingredients),
+            ],
+          ),
         ),
       ),
     );
