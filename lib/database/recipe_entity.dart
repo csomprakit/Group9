@@ -9,9 +9,10 @@ class RecipeEntity
   final String description;
   final String ingredients;
   final String category;
+  final String imagePath;
 
   RecipeEntity(this.id, this.recipeName, this.description, this.ingredients,
-      this.category);
+      this.category, this.imagePath);
 }
 
 
