@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:recipe_book_app/database/recipe_dao.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
-
+import 'GalleryAccess.dart';
 import 'bottom_nav.dart';
-import 'database/recipe_database.dart';
+import 'dart:math';
 
 List<String> cuisines = [
   'Fusion',
@@ -36,42 +37,40 @@ List<String> cuisines = [
 ];
 
 class AddRecipe extends StatelessWidget {
-  final RecipeDatabase database;
+  final RecipeDao dao;
 
-  const AddRecipe({required this.database, Key? key}) : super(key: key);
+  const AddRecipe({required this.dao, Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
+        home: Scaffold(
+      appBar: AppBar(
           title: Text('Add Recipe'),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            }
-          ),
-            backgroundColor: Colors.orangeAccent
-        ),
-        body: RecipeForm(database: database),
-        bottomNavigationBar: BottomNav(),
-      )
-    );
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+          backgroundColor: Colors.orangeAccent),
+      body: RecipeForm(dao: dao),
+      bottomNavigationBar: BottomNav(),
+    ));
   }
 }
 
 class RecipeForm extends StatefulWidget {
-  final RecipeDatabase database;
-  const RecipeForm({required this.database, Key? key}) : super(key: key);
+  final RecipeDao dao;
+  const RecipeForm({required this.dao, Key? key}) : super(key: key);
   @override
   RecipeFormState createState() => RecipeFormState();
 }
 
 class RecipeFormState extends State<RecipeForm> {
-  late RecipeDao dao;
   TextEditingController foodController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController imagePathController = TextEditingController();
+
   String selectedFood = '';
   String menuValue = '';
   bool usingDropdown = false;
@@ -79,12 +78,18 @@ class RecipeFormState extends State<RecipeForm> {
   final String description = '';
   final String ingredients = '';
   final String category = '';
+  final String imagePath = '';
   List<IngredientRow> ingredientRows = [];
 
   @override
   void initState() {
     super.initState();
-    dao = widget.database.recipeDao;
+  }
+
+  void updateImagePath(String path) {
+    setState(() {
+      imagePathController.text = path;
+    });
   }
 
   void addIngredientRow() {
@@ -166,10 +171,11 @@ class RecipeFormState extends State<RecipeForm> {
                 }
                 return null;
               },
-              items: cuisines.map((unit) => DropdownMenuItem<String>(
-                value: unit,
-                child: Text(unit),
-              ))
+              items: cuisines
+                  .map((unit) => DropdownMenuItem<String>(
+                        value: unit,
+                        child: Text(unit),
+                      ))
                   .toList(),
               onChanged: (value) {
                 setState(() {
@@ -178,13 +184,15 @@ class RecipeFormState extends State<RecipeForm> {
               },
             ),
           ),
+          GalleryAccess(updateImagePath: updateImagePath),
           Text(''),
           ElevatedButton(
             key: Key("recordButton"),
-            onPressed: () async{
+            onPressed: () async {
               String food = foodController.text;
               String description = descriptionController.text;
               String cuisine = menuValue;
+              String image = imagePathController.text;
 
               List<String> ingredientsList = [];
               for (var row in ingredientRows) {
@@ -193,9 +201,9 @@ class RecipeFormState extends State<RecipeForm> {
               }
 
               String ingredients = ingredientsList.join(', ');
-              final recipes = await dao.listAllEvents();
+              final recipes = await widget.dao.listAllEvents();
               int lastId = 0;
-              if (recipes.isNotEmpty) {
+              if (recipes.length != 0) {
                 lastId = recipes.last.id;
               }
 
@@ -205,16 +213,20 @@ class RecipeFormState extends State<RecipeForm> {
                 description,
                 ingredients,
                 cuisine,
+                image,
               );
-              await dao.addRecipe(newRecipe);
-              List<RecipeEntity> StoredRecipes = await dao.listAllEvents();
-              RecipeEntity addedRecipe = StoredRecipes[StoredRecipes.length - 1];
+              widget.dao.addRecipe(newRecipe);
+
+              //List<RecipeEntity> StoredRecipes = await widget.dao.listAllEvents();
+
+              //  RecipeEntity addedRecipe = StoredRecipes[StoredRecipes.length - 1];
               showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
                   key: Key("Alert"),
-                  title: Text('Your ${addedRecipe.recipeName} recipe has been added'),
-                  content: Text('Description: ${addedRecipe.description}\nIngredients: ${addedRecipe.ingredients}\nCuisine: ${addedRecipe.category}'),
+                  title: Text('Your recipe has been added'),
+                  //  content: Text(
+                  //    'Description: ${addedRecipe.description}\nIngredients: ${addedRecipe.ingredients}\nCuisine: ${addedRecipe.category}'),
                   actions: [
                     TextButton(
                       onPressed: () {
@@ -230,13 +242,12 @@ class RecipeFormState extends State<RecipeForm> {
             child: const Text('Record Food'),
           )
         ],
-
       ),
     );
   }
 }
 
-class IngredientRow extends StatefulWidget{
+class IngredientRow extends StatefulWidget {
   final onRemove;
   final ingredientController;
   final quantityValue;
@@ -254,6 +265,7 @@ class IngredientRow extends StatefulWidget{
   @override
   IngredientRowState createState() => IngredientRowState();
 }
+
 class IngredientRowState extends State<IngredientRow> {
   late Function()? onRemove;
   late TextEditingController ingredientController;
