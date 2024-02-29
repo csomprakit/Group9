@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'database/recipe_database.dart'; // Import your recipe database files
 import 'bottom_nav.dart';
+import 'database/recipe_dao.dart';
 
 class HomePage extends StatelessWidget {
-  final RecipeDatabase database;
+  final RecipeDao dao;
 
-  const HomePage({required this.database, Key? key}) : super(key: key);
+
+  const HomePage({required this.dao, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
