@@ -5,11 +5,15 @@ import 'package:recipe_book_app/database/recipe_entity.dart';
 import 'package:recipe_book_app/bottom_nav.dart';
 import 'database/recipe_dao.dart';
 
-class ReadPage extends StatelessWidget {
+class ReadPage extends StatefulWidget {
   final RecipeDao dao;
+  ReadPage({required this.dao, Key? key});
 
-  ReadPage({required this.dao, Key? key})
-      : super(key: key);
+  @override
+  State<ReadPage> createState() => _ReadPageState();
+}
+
+class _ReadPageState extends State<ReadPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,7 @@ class ReadPage extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => AddRecipe(dao: dao),
+                  builder: (context) => AddRecipe(dao: widget.dao),
                 ),
               );
             },
@@ -31,7 +35,7 @@ class ReadPage extends StatelessWidget {
       ),
       body: SafeArea(
           child: FutureBuilder<List<RecipeEntity>>(
-              future: dao.listAllEvents(),
+              future: widget.dao.listAllEvents(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Text('No recipes found.');
