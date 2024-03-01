@@ -1,14 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_book_app/ReadPage.dart';
-import 'package:recipe_book_app/database/recipe_database.dart';
 import 'package:recipe_book_app/database/recipe_dao.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
-import 'package:floor/floor.dart';
 import 'dart:async';
-import 'package:sqflite/sqflite.dart' as sqflite;
-
-//part 'package:recipe_book_app/database/recipe_database.g.dart';
+import 'package:mockito/mockito.dart';
+import 'package:recipe_book_app/router.dart';
 
 
 abstract class Database {
@@ -16,6 +13,7 @@ abstract class Database {
 }
 
 class MockRecipeDao implements RecipeDao {
+  List<RecipeEntity> _recipes = [];
   @override
   Future<void> addRecipe(RecipeEntity event) async {}
 
@@ -26,9 +24,8 @@ class MockRecipeDao implements RecipeDao {
   }
 
   @override
-  Future<List<RecipeEntity>> listAllEvents() {
-    // TODO: implement listAllEvents
-    throw UnimplementedError();
+  Future<List<RecipeEntity>> listAllEvents() async {
+    return Future<List<RecipeEntity>>.value(_recipes);
   }
 
   @override
@@ -36,40 +33,35 @@ class MockRecipeDao implements RecipeDao {
     // TODO: implement listCategories
     throw UnimplementedError();
   }
-  
-}
 
-class MockRecipeDatabase implements RecipeDatabase {
   @override
-  RecipeDao get recipeDao => MockRecipeDao();
-  @override
-  Future<int> fetchData() async {
-    return Future.delayed(Duration(seconds: 1), () => 42);
+  Future<void> deleteRecipe(RecipeEntity event) {
+    // TODO: implement deleteRecipe
+    throw UnimplementedError();
   }
 
   @override
-  late StreamController<String> changeListener;
-
-  @override
-  late sqflite.DatabaseExecutor database;
-
-  @override
-  Future<void> close() {
-    // TODO: implement close
+  Future<void> updateRecipe(RecipeEntity event) {
+    // TODO: implement updateRecipe
     throw UnimplementedError();
   }
 }
 
+class MockNavigatorObserver extends Mock implements NavigatorObserver {}
+
 main() {
-  testWidgets('', (tester) async {
-    var mockDatabase = MockRecipeDatabase();
+  testWidgets('Test add recipe button', (tester) async {
+    var mockDao = MockRecipeDao();
+    final router = AppRouter(dao: mockDao).getRouter();
+
     await tester.pumpWidget(
-      MaterialApp(home: ReadPage(database: mockDatabase,))
+      MaterialApp(home: ReadPage(dao: mockDao))
     );
-    await tester.tap(find.byType(ListTile).first);
+    await tester.tap(find.byIcon(Icons.add));
     await tester.pumpAndSettle();
-    expect(find.text('Description:'), findsOneWidget);
+    expect(router.configuration.navigatorKey, '/addRecipe');
   });
 
-
+  testWidgets('Test display of recipe', (tester) async{
+  });
 }

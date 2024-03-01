@@ -25,11 +25,7 @@ class _ReadPageState extends State<ReadPage> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => AddRecipe(dao: widget.dao),
-                ),
-              );
+              GoRouter.of(context).push('/addRecipe');
             },
           )
         ],
