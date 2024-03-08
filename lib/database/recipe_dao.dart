@@ -1,23 +1,25 @@
 import 'package:floor/floor.dart';
-import 'recipe_entity.dart';
+import 'package:recipe_book_app/database/recipe_entity.dart';
 
 @dao
 abstract class RecipeDao {
   @insert
-  Future<void> addRecipe(RecipeEntity event);
+  Future<void> addRecipe(RecipeEntity recipe);
 
   @update
-  Future<void> updateRecipe(RecipeEntity event);
+  Future<void> updateRecipe(RecipeEntity recipe);
 
   @delete
-  Future<void> deleteRecipe(RecipeEntity event);
+  Future<void> deleteRecipe(RecipeEntity recipe);
 
-  @Query('SELECT * FROM Recipe')
-  Future<List<RecipeEntity>> listAllEvents();
+  @Query('SELECT * FROM RecipeEntity')
+  Future<List<RecipeEntity>> listAllRecipes();
 
-  @Query('SELECT DISTINCT category FROM Recipe')
-  Future<List<String>> listCategories();
+  // New method to retrieve the rating of a recipe
+  @Query('SELECT rating FROM RecipeEntity WHERE id = :id')
+  Future<int?> getRecipeRating(int id);
 
-  @Query('SELECT * FROM Recipe WHERE id = :id')
-  Stream<RecipeEntity?> findRecipeById(int id);
+  // New method to update the rating of a recipe
+  @Query('UPDATE RecipeEntity SET rating = :rating WHERE id = :id')
+  Future<void> updateRecipeRating(int id, int rating);
 }

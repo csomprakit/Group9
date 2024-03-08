@@ -8,7 +8,8 @@ class RecipeEntity {
   final String description;
   final String ingredients;
   final String category;
-  final String imagePath; // Add imagePath field
+  final String imagePath;
+  int rating; // New field for storing recipe rating
 
-  RecipeEntity(this.id, this.recipeName, this.description, this.ingredients, this.category, this.imagePath);
+  RecipeEntity(this.id, this.recipeName, this.description, this.ingredients, this.category, this.imagePath, this.rating);
 }

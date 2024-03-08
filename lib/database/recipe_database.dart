@@ -26,7 +26,8 @@ abstract class RecipeDatabase extends FloorDatabase {
           'Classic Italian pasta dish with bacon, eggs, and cheese',
           'Spaghetti, Eggs, Bacon, Parmesan Cheese, Black Pepper',
           'Pasta',
-          'lib/assets/carbonara.jpg'
+          'lib/assets/carbonara.jpg',
+          5
       ),
       RecipeEntity(
           2,
@@ -34,7 +35,8 @@ abstract class RecipeDatabase extends FloorDatabase {
           'Spicy and flavorful chicken curry with a rich sauce',
           'Chicken, Curry Powder, Coconut Milk, Onion, Garlic, Ginger',
           'Curry',
-          'lib/assets/food.jpg'
+          'lib/assets/food.jpg',
+          4
       ),
       RecipeEntity(
           3,
@@ -42,7 +44,8 @@ abstract class RecipeDatabase extends FloorDatabase {
           'Healthy and colorful vegetable stir-fry with a tangy sauce',
           'Broccoli, Bell Peppers, Carrots, Snap Peas, Soy Sauce, Ginger, Garlic',
           'Stir-Fry',
-          'lib/assets/vegetable_stir_fry.jpg'
+          'lib/assets/vegetable_stir_fry.jpg',
+          4
       ),
       // Add more mock recipes as needed
     ];

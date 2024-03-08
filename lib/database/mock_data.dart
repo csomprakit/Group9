@@ -1,4 +1,3 @@
-// Import necessary files
 import 'package:floor/floor.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'recipe_entity.dart';
@@ -17,28 +16,31 @@ Future<void> insertMockData() async {
   // Create mock recipes
   final List<RecipeEntity> mockRecipes = [
     RecipeEntity(
-      1,
-      'Spaghetti Carbonara',
-      'Classic Italian pasta dish with bacon, eggs, and cheese',
-      'Spaghetti, Eggs, Bacon, Parmesan Cheese, Black Pepper',
-      'Pasta',
-      'lib/assets/carbonara.jpg'
+        1,
+        'Spaghetti Carbonara',
+        'Classic Italian pasta dish with bacon, eggs, and cheese',
+        'Spaghetti, Eggs, Bacon, Parmesan Cheese, Black Pepper',
+        'Pasta',
+        'lib/assets/carbonara.jpg',
+        5
     ),
     RecipeEntity(
-      2,
-      'Chicken Curry',
-      'Spicy and flavorful chicken curry with a rich sauce',
-      'Chicken, Curry Powder, Coconut Milk, Onion, Garlic, Ginger',
-      'Curry',
-      'lib/assets/food.jpg'
+        2,
+        'Chicken Curry',
+        'Spicy and flavorful chicken curry with a rich sauce',
+        'Chicken, Curry Powder, Coconut Milk, Onion, Garlic, Ginger',
+        'Curry',
+        'lib/assets/food.jpg',
+        4
     ),
     RecipeEntity(
-      3,
-      'Vegetable Stir-Fry',
-      'Healthy and colorful vegetable stir-fry with a tangy sauce',
-      'Broccoli, Bell Peppers, Carrots, Snap Peas, Soy Sauce, Ginger, Garlic',
-      'Stir-Fry',
-      'lib/assets/vegetable_stir_fry.jpg'
+        3,
+        'Vegetable Stir-Fry',
+        'Healthy and colorful vegetable stir-fry with a tangy sauce',
+        'Broccoli, Bell Peppers, Carrots, Snap Peas, Soy Sauce, Ginger, Garlic',
+        'Stir-Fry',
+        'lib/assets/vegetable_stir_fry.jpg',
+        5
     ),
     // Add more mock recipes as needed
   ];

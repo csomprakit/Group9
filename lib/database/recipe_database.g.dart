@@ -85,7 +85,7 @@ class _$RecipeDatabase extends RecipeDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Recipe` (`id` INTEGER NOT NULL, `recipeName` TEXT NOT NULL, `description` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `category` TEXT NOT NULL, `imagePath` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Recipe` (`id` INTEGER NOT NULL, `recipeName` TEXT NOT NULL, `description` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `category` TEXT NOT NULL, `imagePath` TEXT NOT NULL, `rating` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -113,7 +113,8 @@ class _$RecipeDao extends RecipeDao {
               'description': item.description,
               'ingredients': item.ingredients,
               'category': item.category,
-              'imagePath': item.imagePath
+              'imagePath': item.imagePath,
+              'rating':item.rating
             },
             changeListener),
         _recipeEntityDeletionAdapter = DeletionAdapter(
@@ -137,6 +138,7 @@ class _$RecipeDao extends RecipeDao {
               'ingredients': item.ingredients,
               'category': item.category,
               'imagePath': item.imagePath,
+              'rating':item.rating
             },
             changeListener);
 
@@ -147,7 +149,6 @@ class _$RecipeDao extends RecipeDao {
   final DeletionAdapter<RecipeEntity> _recipeEntityDeletionAdapter;
   final UpdateAdapter<RecipeEntity> _recipeEntityUpdateAdapter;
 
-
   @override
   Future<List<RecipeEntity>> listAllEvents() async {
     return _queryAdapter.queryList('SELECT * FROM Recipe',
@@ -157,7 +158,8 @@ class _$RecipeDao extends RecipeDao {
             row['description'] as String,
             row['ingredients'] as String,
             row['category'] as String,
-            row['imagePath'] as String));
+            row['imagePath'] as String,
+            row['rating'] as int));
   }
 
   @override
@@ -175,7 +177,8 @@ class _$RecipeDao extends RecipeDao {
             row['description'] as String,
             row['ingredients'] as String,
             row['category'] as String,
-            row['imagePath'] as String),
+            row['imagePath'] as String,
+            row['rating'] as int),
         arguments: [id],
         queryableName: 'Recipe',
         isView: false);
@@ -194,5 +197,26 @@ class _$RecipeDao extends RecipeDao {
   @override
   Future<void> deleteRecipe(RecipeEntity event) async {
     await _recipeEntityDeletionAdapter.delete(event);
+  }
+
+  @override
+  Future<int?> getRecipeRating(int id) async {
+    // Implement this method to get the rating for a recipe with the given ID
+    // You may query the database to retrieve the rating for the recipe
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<RecipeEntity>> listAllRecipes() async {
+    // Implement this method to list all recipes
+    // You may query the database to retrieve all recipes
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateRecipeRating(int id, int newRating) async {
+    // Implement this method to update the rating for a recipe with the given ID
+    // You may update the database to reflect the new rating
+    throw UnimplementedError();
   }
 }
