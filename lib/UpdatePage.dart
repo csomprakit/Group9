@@ -13,21 +13,19 @@ class UpdateRecipe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Update Recipe'),
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          backgroundColor: Colors.orangeAccent,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Update Recipe'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
-        body: UpdateRecipeForm(dao: dao, recipe: recipe),
+        backgroundColor: Colors.orangeAccent,
       ),
+      body: UpdateRecipeForm(dao: dao, recipe: recipe),
     );
   }
 }
@@ -165,6 +163,7 @@ class _UpdateRecipeFormState extends State<UpdateRecipeForm> {
                 ingredients,
                 cuisine,
                 image,
+                widget.recipe.rating, // Retain the previous rating
               );
 
               // Update the recipe

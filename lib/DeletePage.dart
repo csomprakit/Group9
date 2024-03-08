@@ -43,7 +43,7 @@ class _RecipeListState extends State<RecipeList> {
   @override
   void initState() {
     super.initState();
-    _recipesFuture = widget.dao.listAllEvents();
+    _recipesFuture = widget.dao.listAllRecipes();
   }
 
   @override
@@ -64,7 +64,7 @@ class _RecipeListState extends State<RecipeList> {
               RecipeEntity recipe = snapshot.data![index];
               return ListTile(
                 title: Text(recipe.recipeName),
-                subtitle: Text(recipe.category),
+                subtitle: Text('Category: ${recipe.category}, Rating: ${recipe.rating}'),
                 trailing: IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () {
@@ -82,7 +82,7 @@ class _RecipeListState extends State<RecipeList> {
   Future<void> _deleteRecipe(RecipeEntity recipe) async {
     await widget.dao.deleteRecipe(recipe);
     setState(() {
-      _recipesFuture = widget.dao.listAllEvents();
+      _recipesFuture = widget.dao.listAllRecipes();
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
