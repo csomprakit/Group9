@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:recipe_book_app/CreatePage.dart';
 import 'package:recipe_book_app/ReadPage.dart';
 import 'package:recipe_book_app/SettingsPage.dart';
+import 'package:recipe_book_app/contacts.dart';
 import 'HomePage.dart';
 import 'database/recipe_database.dart';
 import 'database/recipe_dao.dart';
@@ -44,6 +45,13 @@ class AppRouter
           builder: (context, routerState)
             {
               return AddRecipe(dao: this.dao);
+            }
+        ),
+        GoRoute(
+            path: '/contacts',
+            builder: (context, routerState)
+            {
+              return importContacts();
             }
         )
       ],
