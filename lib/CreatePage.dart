@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:recipe_book_app/database/recipe_dao.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
 import 'GalleryAccess.dart';
 import 'bottom_nav.dart';
-import 'dart:math';
 
 List<String> cuisines = [
   'Fusion',
@@ -40,28 +38,31 @@ class AddRecipe extends StatelessWidget {
   final RecipeDao dao;
 
   const AddRecipe({required this.dao, Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
+    return Scaffold(
       appBar: AppBar(
-          title: Text('Add Recipe'),
-          centerTitle: true,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-          backgroundColor: Colors.orangeAccent),
+        title: Text('Add Recipe'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        backgroundColor: Colors.orangeAccent,
+      ),
       body: RecipeForm(dao: dao),
       bottomNavigationBar: BottomNav(),
-    ));
+    );
   }
 }
 
 class RecipeForm extends StatefulWidget {
   final RecipeDao dao;
   const RecipeForm({required this.dao, Key? key}) : super(key: key);
+
   @override
   RecipeFormState createState() => RecipeFormState();
 }
@@ -70,6 +71,7 @@ class RecipeFormState extends State<RecipeForm> {
   TextEditingController foodController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController imagePathController = TextEditingController();
+  TextEditingController ratingController = TextEditingController();
 
   String selectedFood = '';
   String menuValue = '';
@@ -175,9 +177,9 @@ class RecipeFormState extends State<RecipeForm> {
               },
               items: cuisines
                   .map((unit) => DropdownMenuItem<String>(
-                        value: unit,
-                        child: Text(unit),
-                      ))
+                value: unit,
+                child: Text(unit),
+              ))
                   .toList(),
               onChanged: (value) {
                 setState(() {
@@ -188,6 +190,19 @@ class RecipeFormState extends State<RecipeForm> {
           ),
           GalleryAccess(updateImagePath: updateImagePath),
           Text(''),
+          const Text('Rating'), // New field for recipe rating
+          TextFormField(
+            key: Key("rating"),
+            controller: ratingController,
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+          Text(''),
           ElevatedButton(
             key: Key("recordButton"),
             onPressed: () async {
@@ -195,6 +210,7 @@ class RecipeFormState extends State<RecipeForm> {
               String description = descriptionController.text;
               String cuisine = menuValue;
               String image = imagePathController.text;
+              int rating = int.parse(ratingController.text); // Parse the rating value
 
               List<String> ingredientsList = [];
               for (var row in ingredientRows) {
@@ -203,7 +219,7 @@ class RecipeFormState extends State<RecipeForm> {
               }
 
               String ingredients = ingredientsList.join(', ');
-              final recipes = await widget.dao.listAllEvents();
+              final recipes = await widget.dao.listAllRecipes();
               int lastId = 0;
               if (recipes.length != 0) {
                 lastId = recipes.last.id;
@@ -216,19 +232,15 @@ class RecipeFormState extends State<RecipeForm> {
                 ingredients,
                 cuisine,
                 image,
+                rating, // Pass the rating to the RecipeEntity constructor
               );
               widget.dao.addRecipe(newRecipe);
 
-              //List<RecipeEntity> StoredRecipes = await widget.dao.listAllEvents();
-
-              //  RecipeEntity addedRecipe = StoredRecipes[StoredRecipes.length - 1];
               showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
                   key: Key("Alert"),
                   title: Text('Your recipe has been added'),
-                  //  content: Text(
-                  //    'Description: ${addedRecipe.description}\nIngredients: ${addedRecipe.ingredients}\nCuisine: ${addedRecipe.category}'),
                   actions: [
                     TextButton(
                       onPressed: () {
@@ -296,59 +308,6 @@ class IngredientRowState extends State<IngredientRow> {
             decoration: InputDecoration(labelText: 'Ingredient'),
           ),
         ),
-        /*const SizedBox(width: 10),
-        Expanded(
-          child: DropdownButtonFormField<int>(
-            decoration: InputDecoration(labelText: 'Quantity'),
-            value: quantityValue,
-            items: List.generate(300, (index) {
-              return DropdownMenuItem<int>(
-                value: index + 1,
-                child: Text('${index + 1}'),
-              );
-            }),
-            onChanged: (value) {
-              setState(() {
-                quantityValue = value;
-              });
-            },
-          ),
-        ),
-        Expanded(
-          child: DropdownButtonFormField<String>(
-            decoration: InputDecoration(labelText: 'Fraction'),
-            value: fractionValue,
-            items: ['1/4', '1/3', '1/2', '2/3', '3/4']
-                .map((quantity) => DropdownMenuItem<String>(
-              value: quantity,
-              child: Text(quantity),
-            ))
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                fractionValue = value;
-              });
-            }
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: DropdownButtonFormField<String>(
-            decoration: InputDecoration(labelText: 'Unit'),
-            value: unitValue,
-            items: ['Tbsp', 'tsp', 'cup', 'oz', 'g', 'mL', 'L']
-                .map((unit) => DropdownMenuItem<String>(
-              value: unit,
-              child: Text(unit),
-            ))
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                unitValue = value;
-              });
-            }
-          ),
-        ),*/
         IconButton(
           icon: Icon(Icons.remove),
           onPressed: onRemove,
