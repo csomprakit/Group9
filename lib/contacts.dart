@@ -23,6 +23,16 @@ class _importContactsState extends State<importContacts> {
     return [];
   }
 
+  Future<void> shareDownloadLink(String contactName) async {
+    final _message = 'Check out this Recipe book app! Download link: link';
+
+    await FlutterShare.share(
+      title: 'Download Recipe Book App',
+      text: _message,
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -60,11 +70,15 @@ class _importContactsState extends State<importContacts> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(contact.phones[0].toString()),
-                            Text(contact.emails[0].toString()),
+                            if (contact.phones.isNotEmpty)
+                              Text(contact.phones[0].toString()),
+                            if (contact.emails.isNotEmpty)
+                              Text(contact.emails[0].toString()),
                           ],
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          shareDownloadLink(contact.displayName);
+                        },
                       ),
                       const Divider()
                     ]);
