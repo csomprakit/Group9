@@ -190,7 +190,7 @@ class RecipeFormState extends State<RecipeForm> {
           ),
           GalleryAccess(updateImagePath: updateImagePath),
           Text(''),
-          const Text('Rating'), // New field for recipe rating
+          const Text('Rating(1-5)'), // New field for recipe rating
           TextFormField(
             key: Key("rating"),
             controller: ratingController,

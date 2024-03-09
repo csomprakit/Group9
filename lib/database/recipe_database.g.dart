@@ -201,22 +201,36 @@ class _$RecipeDao extends RecipeDao {
 
   @override
   Future<int?> getRecipeRating(int id) async {
-    // Implement this method to get the rating for a recipe with the given ID
-    // You may query the database to retrieve the rating for the recipe
-    throw UnimplementedError();
+    final result = await _queryAdapter.query(
+      'SELECT rating FROM RecipeEntity WHERE id = ?',
+      arguments: [id],
+      mapper: (Map<String, Object?> row) {
+        final rating = row['rating'] as int?;
+        return rating;
+      },
+    );
+
+    return result;
   }
+
+
 
   @override
   Future<List<RecipeEntity>> listAllRecipes() async {
-    // Implement this method to list all recipes
-    // You may query the database to retrieve all recipes
-    throw UnimplementedError();
+    return _queryAdapter.queryList('SELECT * FROM Recipe',
+        mapper: (Map<String, Object?> row) => RecipeEntity(
+            row['id'] as int,
+            row['recipeName'] as String,
+            row['description'] as String,
+            row['ingredients'] as String,
+            row['category'] as String,
+            row['imagePath'] as String,
+            row['rating'] as int));
   }
 
   @override
   Future<void> updateRecipeRating(int id, int newRating) async {
-    // Implement this method to update the rating for a recipe with the given ID
-    // You may update the database to reflect the new rating
-    throw UnimplementedError();
+    await _queryAdapter.queryNoReturn('UPDATE Recipe SET rating = ? WHERE id = ?',
+        arguments: [newRating, id]);
   }
 }

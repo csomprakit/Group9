@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:recipe_book_app/CreatePage.dart';
+import 'package:recipe_book_app/database/recipe_dao.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
-import 'package:recipe_book_app/bottom_nav.dart';
-import 'database/recipe_dao.dart';
+import 'package:recipe_book_app/CreatePage.dart';
+import 'package:recipe_book_app/UpdatePage.dart';
+import 'package:recipe_book_app/DeletePage.dart';
+import 'bottom_nav.dart';
 
 class ReadPage extends StatefulWidget {
   final RecipeDao dao;
@@ -54,7 +56,7 @@ class _ReadPageState extends State<ReadPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RecipeDetailsPage(recipe: recipe),
+                          builder: (context) => RecipeDetailsPage(recipe: recipe, dao: widget.dao),
                         ),
                       );
                     },
@@ -72,14 +74,39 @@ class _ReadPageState extends State<ReadPage> {
 
 class RecipeDetailsPage extends StatelessWidget {
   final RecipeEntity recipe;
+  final RecipeDao dao;
 
-  RecipeDetailsPage({required this.recipe});
+  RecipeDetailsPage({required this.recipe, required this.dao});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe.recipeName),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdateRecipe(dao: dao, recipe: recipe),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DeleteRecipePage(dao: dao),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
