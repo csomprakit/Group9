@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:recipe_book_app/database/recipe_dao.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
 import 'package:recipe_book_app/CreatePage.dart';
+import 'GalleryAccess.dart';
 
 class UpdateRecipe extends StatelessWidget {
   final RecipeDao dao;
@@ -86,6 +87,12 @@ class _UpdateRecipeFormState extends State<UpdateRecipeForm> {
     });
   }
 
+  void updateImagePath(String path) {
+    setState(() {
+      imagePathController.text = path;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -139,6 +146,8 @@ class _UpdateRecipeFormState extends State<UpdateRecipeForm> {
               },
             ),
           ),
+          Text(''),
+          GalleryAccess(updateImagePath: updateImagePath),
           Text(''),
           ElevatedButton(
             onPressed: () async {
