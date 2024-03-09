@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:fast_contacts/fast_contacts.dart';
+import 'bottom_nav.dart';
 
 class importContacts extends StatefulWidget {
   const importContacts({super.key});
@@ -86,6 +87,7 @@ class _importContactsState extends State<importContacts> {
             },
           ),
         ),
+        bottomNavigationBar: BottomNav(),
       ),
     );
   }
