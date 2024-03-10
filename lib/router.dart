@@ -4,6 +4,7 @@ import 'package:recipe_book_app/ReadPage.dart';
 import 'package:recipe_book_app/SettingsPage.dart';
 import 'package:recipe_book_app/contacts.dart';
 import 'HomePage.dart';
+import 'SearchPage.dart';
 import 'database/recipe_database.dart';
 import 'database/recipe_dao.dart';
 
@@ -28,6 +29,13 @@ class AppRouter
         ),
         GoRoute(
           path: '/search',
+          builder: (context, routerState)
+          {
+            return SearchPage(dao: this.dao);
+          },
+        ),
+        GoRoute(
+          path: '/read',
           builder: (context, routerState)
           {
             return ReadPage(dao: this.dao);
@@ -59,4 +67,3 @@ class AppRouter
   }
 
 }
-
