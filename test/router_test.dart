@@ -37,6 +37,24 @@ class MockRecipeDao implements RecipeDao {
     // TODO: implement updateRecipe
     throw UnimplementedError();
   }
+
+  @override
+  Future<int?> getRecipeRating(int id) {
+    // TODO: implement getRecipeRating
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<RecipeEntity>> listAllRecipes() {
+    // TODO: implement listAllRecipes
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateRecipeRating(int id, int rating) {
+    // TODO: implement updateRecipeRating
+    throw UnimplementedError();
+  }
 }
 
 void main() {
