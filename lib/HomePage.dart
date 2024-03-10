@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     // Navigate to recipes page
-                    GoRouter.of(context).push('/search');
+                    GoRouter.of(context).push('/read');
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.orange)
