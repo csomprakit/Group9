@@ -3,6 +3,7 @@ import 'package:recipe_book_app/database/recipe_dao.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
 import 'package:recipe_book_app/UpdatePage.dart';
 import 'package:recipe_book_app/DeletePage.dart';
+import 'dart:io';
 
 class SearchPage extends StatefulWidget {
   final dao;
@@ -143,7 +144,7 @@ class RecipeDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image(
-              image: AssetImage(recipe.imagePath),
+              image: FileImage(File(recipe.imagePath)),
               width: 250,
               height: 250,
               fit: BoxFit.cover,
