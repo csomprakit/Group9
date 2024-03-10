@@ -8,6 +8,34 @@ import 'package:recipe_book_app/UpdatePage.dart';
 import 'package:recipe_book_app/DeletePage.dart';
 import 'bottom_nav.dart';
 
+List<String> cuisines = [
+  'Fusion',
+  'Italian',
+  'French',
+  'Chinese',
+  'Japanese',
+  'Mexican',
+  'Indian',
+  'Thai',
+  'Spanish',
+  'Greek',
+  'Middle Eastern',
+  'Korean',
+  'Vietnamese',
+  'Brazilian',
+  'American',
+  'British',
+  'German',
+  'Ethiopian',
+  'Moroccan',
+  'Mediterranean',
+  'Asian',
+  'Eastern European',
+  'Caribbean',
+  'African',
+  'Australian/New Zealand'
+];
+
 class ReadPage extends StatefulWidget {
   final RecipeDao dao;
   ReadPage({required this.dao, Key? key});
@@ -17,6 +45,8 @@ class ReadPage extends StatefulWidget {
 }
 
 class _ReadPageState extends State<ReadPage> {
+  String _selectedCuisine = 'All'; // Default selected cuisine
+  String _selectedSorting = 'Alphabetical'; // Default selected sorting
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +54,40 @@ class _ReadPageState extends State<ReadPage> {
       appBar: AppBar(
         title: Text('Recipes'),
         actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: (String value) {
+              setState(() {
+                _selectedCuisine = value;
+              });
+            },
+            itemBuilder: (BuildContext context) {
+              return cuisines // Add your cuisines here
+                  .map<PopupMenuEntry<String>>((String value) {
+                return PopupMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList();
+            },
+          ),
+          DropdownButton<String>(
+            value: _selectedSorting,
+            icon: Icon(Icons.sort),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  _selectedSorting = newValue;
+                });
+              }
+            },
+            items: <String>['Alphabetical', 'Rating'] // Add your sorting options here
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
@@ -40,6 +104,19 @@ class _ReadPageState extends State<ReadPage> {
               return Center(child: Text('No recipes found.'));
             } else {
               List<RecipeEntity> recipes = snapshot.data!;
+
+              // Apply filtering based on selected cuisine
+              if (_selectedCuisine != 'All') {
+                recipes = recipes.where((recipe) => recipe.category == _selectedCuisine).toList();
+              }
+
+              // Apply sorting based on selected option
+              if (_selectedSorting == 'Alphabetical') {
+                recipes.sort((a, b) => a.recipeName.compareTo(b.recipeName));
+              } else if (_selectedSorting == 'Rating') {
+                recipes.sort((a, b) => a.rating.compareTo(b.rating));
+              }
+
               return ListView.builder(
                 itemCount: recipes.length,
                 itemBuilder: (context, index) {
@@ -52,7 +129,6 @@ class _ReadPageState extends State<ReadPage> {
                       radius: 30,
                     ),
                     onTap: () {
-                      // Navigate to recipe details page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
