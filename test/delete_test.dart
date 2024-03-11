@@ -1,23 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:recipe_book_app/database/recipe_dao.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
 import 'package:recipe_book_app/DeletePage.dart';
+import 'package:recipe_book_app/router.dart';
 
-class MockRecipeDao extends Mock implements RecipeDao {}
+class MockRecipeDao implements RecipeDao {
+  List<RecipeEntity> _recipes = [];
+  @override
+  Future<void> addRecipe(RecipeEntity recipe) async {
+    _recipes.add(recipe);
+  }
+
+  @override
+  Future<void> updateRecipe(RecipeEntity updatedRecipe) async {
+    final index = _recipes.indexWhere((recipe) => recipe.id == updatedRecipe.id);
+    if (index != -1) {
+      _recipes[index] = updatedRecipe;
+    }
+  }
+
+  @override
+  Future<void> deleteRecipe(RecipeEntity recipe) async {
+    _recipes.removeWhere((existingRecipe) => existingRecipe.id == recipe.id);
+  }
+
+  @override
+  Future<List<RecipeEntity>> listAllRecipes() {
+    return Future.value(_recipes);
+  }
+
+  @override
+  Future<int?> getRecipeRating(int id) {
+    // TODO: implement getRecipeRating
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateRecipeRating(int id, int rating) {
+    // TODO: implement updateRecipeRating
+    throw UnimplementedError();
+  }
+}
 
 void main() {
-  late RecipeDao dao;
-
-  setUp(() {
-    dao = MockRecipeDao();
-  });
-
   testWidgets('DeleteRecipePage UI Test', (WidgetTester tester) async {
+    var mockDao = MockRecipeDao();
     await tester.pumpWidget(
       MaterialApp(
-        home: DeleteRecipePage(dao: dao),
+        home: DeleteRecipePage(dao: mockDao),
       ),
     );
 
@@ -26,31 +57,33 @@ void main() {
   });
 
   testWidgets('RecipeList Test', (WidgetTester tester) async {
-    final recipes = [
-      RecipeEntity(1, 'Recipe 1', 'Description 1', 'Category 1', 'Image 1', 'Cuisine 1'),
-      RecipeEntity(2, 'Recipe 2', 'Description 2', 'Category 2', 'Image 2', 'Cuisine 2'),
-    ];
+    var mockDao = MockRecipeDao();
+    final router = AppRouter(dao: mockDao).getRouter();
 
-    when(dao.listAllEvents()).thenAnswer((_) => Future.value(recipes));
+    final recipes = [
+      RecipeEntity(1, 'Recipe 1', 'Description 1', 'Category 1', 'Image 1', 'Cuisine 1', 5),
+      RecipeEntity(2, 'Recipe 2', 'Description 2', 'Category 2', 'Image 2', 'Cuisine 2', 2),
+    ];
+    mockDao.addRecipe(recipes[0]);
+    mockDao.addRecipe(recipes[1]);
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: RecipeList(dao: dao),
-        ),
-      ),
+        MaterialApp.router(
+          routerConfig: router,
+        )
     );
 
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    await tester.pump();
+    await tester.tap(find.text('View Recipes'));
+    await tester.pumpAndSettle();
 
-    expect(find.byType(ListTile), findsNWidgets(recipes.length));
+    await tester.tap(find.text('Recipe 1'));
+    await tester.pumpAndSettle();
 
-    // Test deletion
+    await tester.tap(find.byIcon(Icons.delete));
+    await tester.pumpAndSettle();
+
     await tester.tap(find.byIcon(Icons.delete).first);
-    await tester.pump();
-
-    verify(await dao.deleteRecipe(recipes.first)).called(1);
-    expect(find.text('Recipe "${recipes.first.recipeName}" deleted.'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('Recipe 1'), findsNothing);
   });
 }
