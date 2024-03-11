@@ -45,9 +45,8 @@ class MockRecipeDao implements RecipeDao {
   }
 
   @override
-  Future<List<RecipeEntity>> listAllRecipes() {
-    // TODO: implement listAllRecipes
-    throw UnimplementedError();
+  Future<List<RecipeEntity>> listAllRecipes() async {
+    return Future.value(_recipes);
   }
 
   @override
@@ -58,7 +57,7 @@ class MockRecipeDao implements RecipeDao {
 }
 
 void main() {
-  testWidgets('AppRouter Test', (WidgetTester tester) async {
+  testWidgets('AppRouter Test for setting, search, addRecipe', (WidgetTester tester) async {
     var mockDao = MockRecipeDao();
     final router = AppRouter(dao: mockDao).getRouter();
 
@@ -72,6 +71,32 @@ void main() {
     router.go('/search');
     await tester.pumpAndSettle();
     router.go('/addRecipe');
-    await tester.pumpAndSettle();
+    await tester.pump();
+  });
+
+  testWidgets('AppRouter Test for read', (WidgetTester tester) async {
+    var mockDao = MockRecipeDao();
+    final router = AppRouter(dao: mockDao).getRouter();
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        routerConfig: router,
+      ),
+    );
+    router.go('/read');
+    await tester.pump();
+  });
+
+  testWidgets('AppRouter Test for contacts', (WidgetTester tester) async {
+    var mockDao = MockRecipeDao();
+    final router = AppRouter(dao: mockDao).getRouter();
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        routerConfig: router,
+      ),
+    );
+    router.go('/contacts');
+    await tester.pump();
   });
 }
