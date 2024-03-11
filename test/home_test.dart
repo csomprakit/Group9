@@ -13,35 +13,43 @@ abstract class Database {
   Future<int> fetchData();
 }
 
-class MockRecipeDao extends RecipeDao {
+class MockRecipeDao implements RecipeDao {
+  List<RecipeEntity> _recipes = [];
   @override
-  Future<void> addRecipe(RecipeEntity event) async {}
+  Future<void> addRecipe(RecipeEntity recipe) async {
+    _recipes.add(recipe);
+  }
 
   @override
-  Stream<RecipeEntity?> findRecipeById(int id) {
-    // TODO: implement findRecipeById
+  Future<void> updateRecipe(RecipeEntity updatedRecipe) async {
+    final index = _recipes.indexWhere((recipe) => recipe.id == updatedRecipe.id);
+    if (index != -1) {
+      _recipes[index] = updatedRecipe;
+    }
+  }
+
+  @override
+  Future<void> deleteRecipe(RecipeEntity recipe) async {
+    _recipes.removeWhere((existingRecipe) => existingRecipe.id == recipe.id);
+  }
+
+  @override
+  Future<List<RecipeEntity>> listAllRecipes() {
+    return Future<List<RecipeEntity>>.value(_recipes);
+  }
+
+  @override
+  Future<int?> getRecipeRating(int id) {
+    // TODO: implement getRecipeRating
     throw UnimplementedError();
   }
 
   @override
-  Future<List<RecipeEntity>> listAllEvents() {
-    // TODO: implement listAllEvents
+  Future<void> updateRecipeRating(int id, int rating) {
+    // TODO: implement updateRecipeRating
     throw UnimplementedError();
   }
-
-  @override
-  Future<List<String>> listCategories() {
-    // TODO: implement listCategories
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> updateRecipe(RecipeEntity event) async {}
-
-  @override
-  Future<void> deleteRecipe(RecipeEntity event) async {}
 }
-
 class MockRecipeDatabase extends RecipeDatabase {
   late MockRecipeDao _mockRecipeDao;
 
