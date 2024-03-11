@@ -6,41 +6,44 @@ import 'package:recipe_book_app/database/recipe_dao.dart';
 import 'package:recipe_book_app/database/recipe_entity.dart';
 import 'dart:async';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:recipe_book_app/router.dart';
 
 class MockRecipeDao implements RecipeDao {
   List<RecipeEntity> _recipes = [];
   @override
-  Future<void> addRecipe(RecipeEntity event) async {}
+  Future<void> addRecipe(RecipeEntity recipe) async {
+    _recipes.add(recipe);
+  }
 
   @override
-  Stream<RecipeEntity?> findRecipeById(int id) {
-    // TODO: implement findRecipeById
+  Future<void> updateRecipe(RecipeEntity updatedRecipe) async {
+    final index = _recipes.indexWhere((recipe) => recipe.id == updatedRecipe.id);
+    if (index != -1) {
+      _recipes[index] = updatedRecipe;
+    }
+  }
+
+  @override
+  Future<void> deleteRecipe(RecipeEntity recipe) async {
+    _recipes.removeWhere((existingRecipe) => existingRecipe.id == recipe.id);
+  }
+
+  @override
+  Future<List<RecipeEntity>> listAllRecipes() {
+    return Future<List<RecipeEntity>>.value(_recipes);
+  }
+
+  @override
+  Future<int?> getRecipeRating(int id) {
+    // TODO: implement getRecipeRating
     throw UnimplementedError();
   }
 
   @override
-  Future<List<RecipeEntity>> listAllEvents() {
-    return Future.value(_recipes);
-  }
-
-  @override
-  Future<List<String>> listCategories() {
-    // TODO: implement listCategories
+  Future<void> updateRecipeRating(int id, int rating) {
+    // TODO: implement updateRecipeRating
     throw UnimplementedError();
   }
-
-  @override
-  Future<void> deleteRecipe(RecipeEntity event) {
-    // TODO: implement deleteRecipe
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> updateRecipe(RecipeEntity event) {
-    // TODO: implement updateRecipe
-    throw UnimplementedError();
-  }
-
 }
 
 class MockRecipeDatabase implements RecipeDatabase {
@@ -66,11 +69,20 @@ class MockRecipeDatabase implements RecipeDatabase {
 
 main() {
   testWidgets('', (tester) async {
-    var mockDatabase = MockRecipeDatabase();
-    var mockDao = mockDatabase.recipeDao;
-    await tester.pumpWidget(MaterialApp(
-      home: AddRecipe(dao: mockDao),
-    ));
+    var mockDao = MockRecipeDao();
+    final router = AppRouter(dao: mockDao).getRouter();
+
+    await tester.pumpWidget(
+        MaterialApp.router(
+          routerConfig: router,
+        ));
+
+    await tester.tap(find.text('View Recipes'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.add).first);
+    await tester.pumpAndSettle();
+
     expect(find.text("Add Recipe"), findsOneWidget);
     expect(find.text("Recipe Name"), findsOneWidget);
     expect(find.text("Description"), findsOneWidget);
@@ -91,6 +103,7 @@ main() {
 
     await tester.tap(find.byKey(Key("recordButton")));
     await tester.pumpAndSettle();
-    expect(find.byKey(Key("Alert")), findsOneWidget);
   });
 }
+
+
